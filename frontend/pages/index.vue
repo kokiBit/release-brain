@@ -1,65 +1,87 @@
 <template>
   <section class="container">
-    <div>
-      <logo/>
-      <h1 class="title">
-        frontend
-      </h1>
-      <h2 class="subtitle">
-        My stellar Nuxt.js project
-      </h2>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          class="button--green">Documentation</a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          class="button--grey">GitHub</a>
-      </div>
+    <div v-if="$apollo.loading">Loading...</div>
+    <div v-if="!$apollo.loading">
+      {{ userResolver.name }}
     </div>
+    <el-upload
+      :show-file-list="false"
+      :on-success="handleAvatarSuccess"
+      :before-upload="beforeAvatarUpload"
+      class="avatar-uploader"
+      action="https://jsonplaceholder.typicode.com/posts/">
+      <img
+        v-if="imageUrl"
+        :src="imageUrl"
+        class="avatar">
+      <i
+        v-else
+        class="el-icon-plus avatar-uploader-icon"/>
+    </el-upload>
   </section>
 </template>
 
 <script>
 import Logo from '~/components/Logo.vue'
+import getUserGql from '../apollo/gql/getUser.gql'
 
 export default {
   components: {
     Logo
+  },
+  data() {
+    return {
+      userResolver: [],
+      imageUrl: ''
+    }
+  },
+  apollo: {
+    userResolver: {
+      query: getUserGql
+    }
+  },
+  methods: {
+    handleAvatarSuccess(res, file) {
+      this.imageUrl = URL.createObjectURL(file.raw)
+    },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === 'image/jpeg'
+      const isLt2M = file.size / 1024 / 1024 < 2
+
+      if (!isJPG) {
+        this.$message.error('Avatar picture must be JPG format!')
+      }
+      if (!isLt2M) {
+        this.$message.error('Avatar picture size can not exceed 2MB!')
+      }
+      return isJPG && isLt2M
+    }
   }
 }
 </script>
 
 <style>
-.container {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
   text-align: center;
 }
-
-.title {
-  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+.avatar {
+  width: 178px;
+  height: 178px;
   display: block;
-  font-weight: 300;
-  font-size: 100px;
-  color: #35495e;
-  letter-spacing: 1px;
-}
-
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
-}
-
-.links {
-  padding-top: 15px;
 }
 </style>
