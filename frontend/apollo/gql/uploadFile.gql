@@ -1,0 +1,8 @@
+mutation UploadFile($file: ImageType!) {
+  uploadFileMutation(avatar: $file) {
+    user {
+      name
+      avatar
+    }
+  }
+}

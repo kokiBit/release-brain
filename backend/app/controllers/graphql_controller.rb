@@ -1,13 +1,27 @@
+require 'json'
 class GraphqlController < ApplicationController
   def execute
-    variables = ensure_hash(params[:variables])
-    query = params[:query]
-    operation_name = params[:operationName]
     context = {
       # Query context goes here, for example:
       # current_user: current_user,
     }
-    result = BackendSchema.execute(query, variables: variables, context: context, operation_name: operation_name)
+    result = if params[:operations]
+                param = JSON.parse(params[:operations])
+                BackendSchema.execute(
+                   param["query"],
+                   operation_name: param["operationName"],
+                   variables: { "file" => params["0"] },
+                   context: context
+                 )
+              else
+                BackendSchema.execute(
+                   params[:query],
+                   operation_name: params[:operationName],
+                   variables: ensure_hash(params[:variables]),
+                   context: context
+                 )
+               end
+    #result = BackendSchema.execute(query, variables: variables, context: context, operation_name: operation_name)
     render json: result
   rescue => e
     raise e unless Rails.env.development?

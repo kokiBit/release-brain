@@ -3,8 +3,6 @@ class Mutations::CreateUserMutation < Mutations::BaseMutation
 
   argument :name, String, required: false
   argument :email, String, required: false
-  argument :password, String, required: false
-  argument :avatar, ApolloUploadServer::Upload, required: false
 
   field :user, Types::UserType, null: false
   field :errors, [String], null: false

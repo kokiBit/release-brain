@@ -6,6 +6,7 @@ import { onError } from 'apollo-link-error'
 import { persistCache } from 'apollo-cache-persist'
 import { RetryLink } from 'apollo-link-retry'
 import { withClientState } from 'apollo-link-state'
+import { createUploadLink } from 'apollo-upload-client'
 
 export default () => {
   // GraphQL // GraphQL API endpoint
@@ -71,12 +72,17 @@ export default () => {
     }
   })
 
+  const uploadLink = new createUploadLink({
+    uri: 'http://localhost:3000/graphql'
+  })
+
   const link = ApolloLink.from([
     retryLink,
     authLink,
     errorLink,
     stateLink,
-    httpLink
+    //httpLink,
+    uploadLink
   ])
 
   return {

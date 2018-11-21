@@ -21,7 +21,7 @@ gem 'graphql', '1.8.11'
 gem 'apollo_upload_server'
 
 # Use ActiveStorage variant
-# gem 'mini_magick', '~> 4.8'
+gem 'mini_magick', '~> 4.8'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development

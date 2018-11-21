@@ -1327,7 +1327,7 @@ apollo-tracing@0.3.2:
     apollo-server-env "2.2.0"
     graphql-extensions "0.3.2"
 
-apollo-upload-client@^9.0.0:
+apollo-upload-client@^9.0.0, apollo-upload-client@^9.1.0:
   version "9.1.0"
   resolved "https://registry.yarnpkg.com/apollo-upload-client/-/apollo-upload-client-9.1.0.tgz#13191714ae07388088f2c773ebbfd53ba2f64c53"
   dependencies:

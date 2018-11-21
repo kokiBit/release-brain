@@ -11,8 +11,8 @@
       class="avatar-uploader"
       action="https://jsonplaceholder.typicode.com/posts/">
       <img
-        v-if="imageUrl"
-        :src="imageUrl"
+        v-if="userResolver.avatar"
+        :src="userResolver.avatar"
         class="avatar">
       <i
         v-else
@@ -24,6 +24,7 @@
 <script>
 import Logo from '~/components/Logo.vue'
 import getUserGql from '../apollo/gql/getUser.gql'
+import uploadFileGql from '../apollo/gql/uploadFile.gql'
 
 export default {
   components: {
@@ -31,8 +32,7 @@ export default {
   },
   data() {
     return {
-      userResolver: [],
-      imageUrl: ''
+      userResolver: []
     }
   },
   apollo: {
@@ -42,7 +42,12 @@ export default {
   },
   methods: {
     handleAvatarSuccess(res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw)
+      this.$apollo.mutate({
+        mutation: uploadFileGql,
+        variables: {
+          file: file
+        }
+      })
     },
     beforeAvatarUpload(file) {
       const isJPG = file.type === 'image/jpeg'
